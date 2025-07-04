@@ -7,7 +7,7 @@
 
 ```sh
 curl -L https://raw.githubusercontent.com/warrensbox/tgswitch/release/install.sh | sudo bash
-tgswitch 0.82.3
+tgswitch 0.82.4
 ```
 
 2. Install [Terraform version manager](https://github.com/warrensbox/terraform-switcher) and Terraform 1.12.2
