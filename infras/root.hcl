@@ -14,8 +14,11 @@ remote_state {
     bucket         = "aws-eks-terraform-state" # Update this with your actual bucket name
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "ap-southeast-1" # Region to store the state only
-    encrypt        = true 
-    dynamodb_table = "aws-eks-terraform-state-lock"
+    encrypt        = true
+    use_lockfile = {
+      enabled = true
+      lock_table = "aws-eks-terraform-state-lock" # Update this with your actual DynamoDB table name
+    }
   }
   generate = {
     path      = "backend.tf"
