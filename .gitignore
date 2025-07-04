@@ -1,1 +1,5 @@
 .terragrunt-cache
+*.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
