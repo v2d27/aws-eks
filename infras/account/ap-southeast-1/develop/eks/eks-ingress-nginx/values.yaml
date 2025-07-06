@@ -61,7 +61,6 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-security-groups: "${security_group}"
       service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
 
-
   admissionWebhooks:
     patch:
       enabled: true
