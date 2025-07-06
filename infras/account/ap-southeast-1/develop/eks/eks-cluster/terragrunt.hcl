@@ -8,15 +8,18 @@ terraform {
 }
 
 dependency "vpc" {
-  config_path = "../vpc"
+  config_path = "../../vpc"
 }
 
 dependency "current_user" {
-  config_path = "../iam/current-user"
+  config_path = "../../iam/current-user"
 }
 
 locals {
-  admin_users = [] # Enter more admin users here, e.g. ["arn:aws:iam::123456789012:user/JohnDoe"]
+  admin_users = [
+    # "arn:aws:iam::123456789012:user/admin1", # Replace with actual IAM user ARNs
+    # "arn:aws:iam::123456789012:user/admin2"  # Replace with actual IAM user ARNs
+  ] # Enter more admin users here, e.g. ["arn:aws:iam::123456789012:user/JohnDoe"]
 }
 
 inputs = {
@@ -58,7 +61,7 @@ inputs = {
   # AMI types: https://docs.aws.amazon.com/eks/latest/userguide/retrieve-ami-id.html
   # EKS Instance: https://docs.aws.amazon.com/eks/latest/userguide/automode-learn-instances.html
   eks_managed_node_groups = {
-    develop-on-demand = {
+    eks-develop-ondemand = {
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.medium"]
       min_size     = 0
@@ -67,7 +70,7 @@ inputs = {
       autoscaling_group_schedule_arns = {}
     }
 
-    develop-spot = {
+    eks-develop-spot = {
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.medium"]
       capacity_type  = "SPOT"
@@ -96,4 +99,6 @@ inputs = {
   }
 
   create_cloudwatch_log_group    = false
+  
+  # cloudwatch_log_group_retention_in_days = 30
 }

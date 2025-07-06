@@ -1,0 +1,47 @@
+global:
+  domain: ${argocd_domain}
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+configs:
+  params:
+    server.insecure: true
+  secret:
+    argocdServerAdminPassword: "${admin_password_bcrypt}" # Generated dynamically
+    argocdServerAdminPasswordMtime: "${password_mtime}" # Generated dynamically
+    accounts.devuser.password: "${devuser_password_bcrypt}" # Generated dynamically
+    accounts.devuser.passwordMtime: "${password_mtime}" # Generated dynamically
+    webhook.github.secret: "${webhook_secret}" # raw secret password for hook calling from github
+  cm:
+    accounts.devuser: login
+    accounts.devuser.enabled: "true"
+    accounts.devuser.tokens.expiry: "24h"
+    rbacConfig.policy.default: role:devreadonly
+    webhook.generic.enabled: "true"
+  rbac:
+    policy.csv: |
+      p, role:devreadonly, applications, get, wsaws/*, allow
+      p, role:devreadonly, applications, sync, */*, deny
+      p, role:devreadonly, applications, create, */*, deny
+      p, role:devreadonly, applications, delete, */*, deny
+      p, role:devreadonly, applications, override, */*, deny
+      p, role:devreadonly, applications, sync, */*, deny
+      p, role:devreadonly, applications, update, */*, deny
+      g, devuser, role:devreadonly
+    policy.default: role:devreadonly
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+
+redis:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+dex:
+  enabled: true

@@ -1,0 +1,76 @@
+controller:
+  minReadySeconds: 30
+
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+  livenessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  replicaCount: 2
+  minAvailable: 2
+
+  resources:
+    ##  limits:
+    ##    cpu: 100m
+    ##    memory: 90Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  autoscaling:
+    enabled: true
+    annotations: {}
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 70
+    behavior: {}
+
+  service:
+    enabled: true
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-name: "${local_balancer_name}"  # "8ten-nlb-non-prod"
+      # service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: true
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "300"      # Interval in seconds between [5-300] seconds
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "5"         # Timeout in seconds
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2" # Healthy threshold min 2 times
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "3" # Unhealthy threshold
+      service.beta.kubernetes.io/aws-load-balancer-security-groups: "${security_group}"
+      service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
+
+  admissionWebhooks:
+    patch:
+      enabled: true
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+
+defaultBackend:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+tcp:
+  # "5000": "8ten-non-prod/common-rabbitmq-service:5672"
+
