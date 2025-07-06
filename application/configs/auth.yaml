@@ -1,0 +1,25 @@
+server:
+  grpc_port: 50053
+  http_port: 8083
+  host: "0.0.0.0"
+
+service:
+  name: "auth-service"
+  version: "1.0.0"
+
+clients:
+  hello_service:
+    host: "localhost"
+    port: 50051
+  user_service:
+    host: "localhost"
+    port: 50052
+
+auth:
+  jwt_secret: "your-secret-key-here"
+  token_expiry: 3600  # 1 hour in seconds
+  refresh_token_expiry: 86400  # 24 hours in seconds
+
+logging:
+  level: "info"
+  format: "json"
