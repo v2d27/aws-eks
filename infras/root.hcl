@@ -1,11 +1,10 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # TERRAGRUNT CONFIGURATION
 # ---------------------------------------------------------------------------------------------------------------------
-
-include "env" {
-  path = find_in_parent_folders("env.hcl")
-  expose = true
-}
+# include "env" {
+#   path = find_in_parent_folders("env.hcl")
+#   expose = true
+# }
 
 # Generate an AWS provider block
 generate "provider" {
@@ -25,7 +24,7 @@ EOF
 remote_state {
   backend = "s3"
   config = {
-    bucket         = "aws-eks-terraform-state" # Update this with your actual bucket name
+    bucket         = "ws-aws-eks-terraform-state" # Update this with your actual bucket name
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "${inlcude.env.locals.region}" # Region to store the state only
     encrypt        = true

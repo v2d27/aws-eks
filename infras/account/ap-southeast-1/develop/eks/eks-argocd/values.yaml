@@ -1,0 +1,52 @@
+global:
+  domain: argocd-nonprod.8ten.cloud
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+configs:
+  params:
+    server.insecure: true
+  secret:
+    argocdServerAdminPassword: "$2y$10$L76TkzKRTT2NhT0ZmmXUyet04oRlfnA1U.bxiYVPtyE5Kv7FzJlLq" # plain: z5zzrWzY06Bi8OcEgc6aY0RERDpvUHul55th
+    argocdServerAdminPasswordMtime: "2021-01-01T10:11:12Z"
+    accounts.devuser.password: "$2y$10$m95gB1kX0IiI2WIbVxesdONN3VAG1q7nm./PEWztPbOV1wcpweBPm" # htpasswd -bnBC 10 "" "S#$X9lHdRJo309@6nl349" | tr -d ':\n'
+    accounts.devuser.passwordMtime: "2021-01-01T10:11:12Z" # argocd account update-password --account devuser
+    webhook.github.secret: "94fe2044063c42f8eed3fe5f1fda3bba30ae7352f5a3345a1f3109229e8881b4" # raw secret password for hook calling from github
+  cm:
+    accounts.devuser: login
+    accounts.devuser.enabled: "true"
+    accounts.devuser.tokens.expiry: "24h"
+    rbacConfig.policy.default: role:devreadonly
+    webhook.generic.enabled: "true"
+  rbac:
+    policy.csv: |
+      p, role:devreadonly, applications, get, 8ten/*, allow
+      p, role:devreadonly, applications, sync, */*, deny
+      p, role:devreadonly, applications, create, */*, deny
+      p, role:devreadonly, applications, delete, */*, deny
+      p, role:devreadonly, applications, override, */*, deny
+      p, role:devreadonly, applications, sync, */*, deny
+      p, role:devreadonly, applications, update, */*, deny
+      g, devuser, role:devreadonly
+    policy.default: role:devreadonly
+
+
+# argocd login argocd-nonprod.8ten.cloud --username admin --password z5zzrWzY06Bi8OcEgc6aY0RERDpvUHul55th --insecure
+# show list of accounts:
+# argocd account list --port-forward --port-forward-namespace argocd --plaintext
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+
+redis:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+dex:
+  enabled: true
