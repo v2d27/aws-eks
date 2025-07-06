@@ -1,0 +1,20 @@
+server:
+  grpc_port: 50051
+  http_port: 8081
+  host: "0.0.0.0"
+
+service:
+  name: "hello-service"
+  version: "1.0.0"
+
+clients:
+  user_service:
+    host: "localhost"
+    port: 50052
+  auth_service:
+    host: "localhost"
+    port: 50053
+
+logging:
+  level: "info"
+  format: "json"

@@ -2,6 +2,7 @@ locals {
     global_vars = read_terragrunt_config(find_in_parent_folders("global_vars.hcl"))
     system = local.global_vars.locals.system
     allowed_ip = local.global_vars.locals.allowed_ip
+    domain = local.global_vars.locals.domain
 
     region_data = read_terragrunt_config(find_in_parent_folders("region.hcl"))
     region = local.region_data.locals.region
