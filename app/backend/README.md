@@ -33,6 +33,7 @@ backend/
 ├── pkg/
 │   └── config/         # Configuration management
 ├── .env.example        # Environment variable template
+├── .dockerignore       # Docker ignore patterns
 ├── Dockerfile          # Container configuration
 └── main.go            # Main application file
 ```
@@ -70,14 +71,15 @@ ENV=development
 
 4. Run the server:
 ```bash
-# Run directly
-go run main.go
-
-# Or run from cmd/server
+# Run from backend directory
 go run ./cmd/server
 
-# Or with specific main file
+# Or with full path
 go run ./cmd/server/main.go
+
+# Build and run binary
+go build -o server ./cmd/server
+./server
 ```
 
 The server will start with:
@@ -108,15 +110,45 @@ go build -o server ./cmd/server
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/healthz` | Health check endpoint |
+| `GET` | `/healthz` | Health check endpoint returning JSON status |
 | `WebSocket` | `/ws` | WebSocket connection for real-time messaging |
 
-### WebSocket Events
+### Health Check Response
+```json
+{
+  "status": "healthy",
+  "time": "2025-08-04T14:30:00Z"
+}
+```
 
-The WebSocket connection handles:
-- Client connection/disconnection
-- Message broadcasting to all connected clients
-- Automatic client cleanup on disconnect
+### WebSocket Message Types
+
+**User Join Message:**
+```json
+{
+  "type": "user_join",
+  "userId": "user_abc123"
+}
+```
+
+**Chat Message:**
+```json
+{
+  "type": "message",
+  "content": "Hello, World!",
+  "senderId": "user_abc123",
+  "timestamp": "2025-08-04T14:30:00Z"
+}
+```
+
+**Client Info Broadcast:**
+```json
+{
+  "type": "client_info",
+  "totalClients": 3,
+  "onlineUsers": ["user_abc123", "user_def456", "user_ghi789"]
+}
+```
 
 ## Docker Support
 
@@ -145,10 +177,27 @@ The server logs key events for monitoring:
 ### Health Check
 ```bash
 curl http://localhost:8080/healthz
+# Expected response:
+# {"status":"healthy","time":"2025-08-04T14:30:00Z"}
 ```
 
-### WebSocket Connection
-- Use any WebSocket client to connect to `ws://localhost:8080/ws`
+### WebSocket Connection Test
+```bash
+# Using wscat (install with: npm install -g wscat)
+wscat -c ws://localhost:8080/ws
+
+# Send user join message
+{"type":"user_join","userId":"test_user"}
+
+# Send chat message
+{"type":"message","content":"Hello from test!","senderId":"test_user"}
+```
+
+### Load Testing
+```bash
+# Test multiple concurrent connections
+go test ./internal/websocket -v
+```
 
 ## Contributing
 

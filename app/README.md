@@ -18,28 +18,26 @@ A simple real-time chat application built with Go backend and React frontend, fe
 ## Project Structure
 ```
 app/
-├── backend/                 # Go WebSocket server
-│   ├── cmd/server/         # Application entry point
-│   ├── internal/           # Private application code
-│   │   ├── handlers/       # HTTP request handlers
-│   │   ├── models/         # Data structures
-│   │   └── websocket/      # WebSocket logic
-│   ├── pkg/config/         # Configuration management
-│   └── main.go             # Main application file
-├── frontend/               # React TypeScript frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── services/       # API services
-│   │   ├── styles/         # CSS files
-│   │   └── types.ts        # TypeScript definitions
-│   ├── package.json
-│   └── vite.config.ts
-├── docker-compose.yml      # Multi-container setup
-├── DEV_SETUP.md           # Development guide
-└── DOCKER_README.md       # Docker guide
+├── backend/                  # Go WebSocket server
+│   ├── cmd/                  # Application entry point
+│   │   └── server/
+│   ├── internal/             # Private application code
+│   │   ├── handlers/         # HTTP request handlers
+│   │   ├── models/           # Data structures
+│   │   └── websocket/        # WebSocket logic
+│   └── pkg/                  # Packages (shared/config)
+│       └── config/           # Configuration management
+├── frontend/                 # React TypeScript frontend
+│   ├── public/               # Static assets
+│   └── src/                  # Source code
+│       ├── components/       # React components
+│       ├── hooks/            # Custom hooks
+│       ├── services/         # API/WebSocket services
+│       ├── styles/           # CSS files
+│       └── utils/            # Utility functions
+├── docs/                     # Documentation
+│   └── images/               # Images and assets
 ```
-
 
 ## Quick Start
 
