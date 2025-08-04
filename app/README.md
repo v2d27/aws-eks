@@ -2,30 +2,20 @@
 
 A simple real-time chat application built with Go backend and React frontend, featuring WebSocket communication.
 
+## Core Features Summary:
+
+- **Real-Time Messaging**: Instant communication using WebSocket with support for multiple clients.
+
+- **Backend**: Manages connections, broadcasts messages, logs events, supports CORS, and offers health checks.
+
+- **Frontend**: Modern UI with real-time updates, message history, connection indicators, keyboard shortcuts, and auto-scroll.
+
+## Demo
+
 ![img](./docs/images/cover.png)
 
-## Core Features
 
-### Real-Time Messaging
-- **Instant Communication:** Messages sent by users are immediately visible to all connected clients
-- **Multi-Client Support:** Supports multiple simultaneous users across different browser tabs/windows
-- **WebSocket Protocol:** Uses native WebSocket for low-latency, full-duplex communication
-
-### Backend Capabilities
-- **Connection Management:** Handles WebSocket connections, disconnections, and client cleanup
-- **Message Broadcasting:** Distributes messages to all connected clients instantly
-- **Health Monitoring:** Provides health check endpoints for monitoring
-- **Structured Logging:** Comprehensive logging for debugging and monitoring
-- **CORS Support:** Proper cross-origin resource sharing configuration
-
-### Frontend Features
-- **Real-Time UI Updates:** Automatic UI updates when messages are received
-- **Clean Interface:** Modern, responsive design with message history
-- **Connection Status:** Visual indicators for connection state
-- **Keyboard Shortcuts:** Enter key to send messages
-- **Auto-scroll:** Automatic scrolling to new messages
-
-### Project Structure
+## Project Structure
 ```
 app/
 ├── backend/                 # Go WebSocket server
