@@ -3,3 +3,14 @@
 *.tfstate
 *.tfstate.backup
 *.tfvars
+
+
+# application
+node_modules/
+dist/
+coverage/
+
+*.env
+*.log
+*.pid
+
