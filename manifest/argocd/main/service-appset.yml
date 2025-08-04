@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: hercules-services-appset-main
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: git@github.com:v2d27/aws-eks.git
+        revision: HEAD
+        directories:
+          - path: services/**/overlays/main
+  template:
+    metadata:
+      name: '{{index .path.segments 1}}-main'
+    spec:
+      project: aws-eks
+      source:
+        repoURL: git@github.com:v2d27/aws-eks.git
+        path: '{{.path.path}}'
+        targetRevision: HEAD
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: hercules-main
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+      revisionHistoryLimit: 5
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          namespace: hercules-main
+          jsonPointers:
+            - /spec/replicas
+          name: hercules-backend-service-deployment
+        - group: apps
+          kind: Deployment
+          namespace: hercules-main
+          jsonPointers:
+            - /spec/replicas
+          name: hercules-frontend-service-deployment

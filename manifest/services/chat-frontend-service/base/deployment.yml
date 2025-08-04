@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hercules-frontend-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hercules-frontend-service
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: hercules-frontend-service
+    spec:
+      serviceAccountName: default-ksa
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: eks.amazonaws.com/capacityType
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app: hercules-frontend-service
+      containers:
+      - name: hercules-frontend-service
+        image: deployment-image
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
+        resources:
+          requests:
+            cpu: 64m
+            memory: 128Mi
+          limits:
+            cpu: 128m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 10
+        envFrom:
+        - configMapRef:
+          name: hercules-backend-service-configs
+        - secretRef:
+          name: hercules-backend-service-secrets
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP

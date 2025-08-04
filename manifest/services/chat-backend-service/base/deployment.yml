@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hercules-backend-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hercules-backend-service
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: hercules-backend-service
+        system: hercules
+        lbtype: network-load-balancer
+    spec:
+      serviceAccountName: default-ksa
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      containers:
+      - name: hercules-backend-service
+        image: deployment-image
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 6382
+          - containerPort: 6383
+          - containerPort: 6384
+        resources:
+          requests:
+            cpu: 250m
+            memory: 500Mi
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 6382
+          initialDelaySeconds: 180
+          periodSeconds: 40
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 6382
+          initialDelaySeconds: 30
+          periodSeconds: 40
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 30
+        envFrom:
+        - configMapRef:
+          name: hercules-backend-service-configs
+        - secretRef:
+          name: hercules-backend-service-secrets
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP

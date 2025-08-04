@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hercules-backend-service-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: hercules-backend-service
+        resources:
+          requests:
+            cpu: 50m
+            memory: 200Mi
+          limits:
+            cpu: 500m
+            memory: 700Mi
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+        eks-node-group-type: standard
+        kubernetes.io/arch: arm64

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hercules-frontend-service-configs
+data:
+  PORT: "3000"
+  DEPLOY_ENV: "demo"
+  TARGET_PROXY_URL: http://chat-api-service
+  TELEMETRY_ENABLED: "true"
+  TELEMETRY_SAMPLE_RATE: "0.1"
+
+  # Deprecated
+  OPEN_TELEMETRY_ENDPOINT: http://signoz-infra-k8s-infra-otel-agent.platform.svc.cluster.local:4317
+  OPEN_TELEMETRY_SAMPLER_RATE_DEFAULT: "0.1"
