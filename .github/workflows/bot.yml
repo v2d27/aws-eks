@@ -3,13 +3,10 @@ on:
     branches:
 
 jobs:
-  bot-push:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write 
-    steps:
   auto-format:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
