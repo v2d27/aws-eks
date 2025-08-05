@@ -10,7 +10,7 @@ spec:
         repoURL: git@github.com:v2d27/aws-eks.git
         revision: HEAD
         directories:
-          - path: services/**/overlays/main
+          - path: manifest/services/**/overlays/main
   template:
     metadata:
       name: '{{index .path.segments 1}}-main'
@@ -22,7 +22,7 @@ spec:
         targetRevision: HEAD
       destination:
         server: https://kubernetes.default.svc
-        namespace: hercules-main
+        namespace: 'chat-main'
       syncPolicy:
         automated:
           prune: true
@@ -33,13 +33,13 @@ spec:
       ignoreDifferences:
         - group: apps
           kind: Deployment
-          namespace: hercules-main
+          namespace: 'chat-main'
           jsonPointers:
             - /spec/replicas
           name: hercules-backend-service-deployment
         - group: apps
           kind: Deployment
-          namespace: hercules-main
+          namespace: 'chat-main'
           jsonPointers:
             - /spec/replicas
           name: hercules-frontend-service-deployment

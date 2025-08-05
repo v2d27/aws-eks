@@ -3,11 +3,11 @@ apiVersion: v1
 metadata:
   name: chat-api-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: hercules-backend-service
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 6382
+      targetPort: 8080

@@ -40,6 +40,9 @@ jobs:
     name: Building image ${{ inputs.registry }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    outputs:
+      image: ${{ steps.get.outputs.tags }}
+      service_name: ${{ steps.get.outputs.service_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,7 +62,7 @@ jobs:
       - name: Get Metadata
         id: get
         run: |
-          echo "tags=${{ env.docker_user }}/${{ inputs.registry }}:${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
+          echo "tags=${{ env.docker_user }}/${{ inputs.registry }}:${{ github.ref_name }}-${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
           echo "cache=${{ env.docker_user }}/${{ inputs.registry }}:cache" >> $GITHUB_OUTPUT
           echo "labels=org.opencontainers.image.revision=${{ github.sha }}" >> $GITHUB_OUTPUT
           echo "author=org.opencontainers.image.authors=${{ env.author }}" >> $GITHUB_OUTPUT
@@ -68,6 +71,7 @@ jobs:
           registry=$(echo "${registry##*-}")
           echo "context=./app/$registry" >> $GITHUB_OUTPUT
           echo "dockerfile=./app/$registry/Dockerfile" >> $GITHUB_OUTPUT
+          echo "service_name=chat-$registry-service" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -89,10 +93,23 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: build-and-push
   #   environment: ${{ inputs.environment }}
+  #   env:
+  #     service_name: ${{ steps.build-and-push.outputs.service_name }}
+  #     image: ${{ steps.build-and-push.outputs.image }}
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v4
 
-      
+  #     - name: Install Kustomize
+  #       uses: imranismail/setup-kustomize@v2.1.0
 
-        
+  #     - name: Update new deployment image
+  #       run: |
+  #         echo "Updating deployment image for $service_name in ${{ github.ref_name}}"
+  #         cd ${{ github.workspace }}/manifest/services/$service_name/overlays/${{ github.ref_name}}
+  #         kustomize edit set image deployment-image=$DOCKER_IMAGE
+  #         kustomize build .
+  #         echo "----- Validating kustomization.yml -----"
+  #         cat kustomization.yml
+
+  #     - name: 

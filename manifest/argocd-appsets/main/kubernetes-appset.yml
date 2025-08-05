@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: hercules-infras-appset-main
+  name: hercules-k8s-appset-main
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
@@ -10,10 +10,10 @@ spec:
         repoURL: git@github.com:v2d27/aws-eks.git
         revision: HEAD
         directories:
-          - path: infrastructures/overlays/main
+          - path: manifest/**/kubernetes/overlays/main
   template:
     metadata:
-      name: 'hercules-infras-main'
+      name: 'hercules-k8s-main'
     spec:
       project: aws-eks
       source:
@@ -22,11 +22,9 @@ spec:
         targetRevision: HEAD
       destination:
         server: https://kubernetes.default.svc
-        namespace: 'chat-main'
+        namespace: 'kube-system'
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
-        syncOptions:
-        - CreateNamespace=true
       revisionHistoryLimit: 5

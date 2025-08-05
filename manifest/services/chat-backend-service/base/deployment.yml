@@ -22,32 +22,30 @@ spec:
         image: deployment-image
         imagePullPolicy: Always
         ports:
-          - containerPort: 6382
-          - containerPort: 6383
-          - containerPort: 6384
+          - containerPort: 8080
         resources:
           requests:
-            cpu: 250m
-            memory: 500Mi
+            cpu: 50m
+            memory: 10Mi
           limits:
-            cpu: 500m
-            memory: 1024Mi
+            cpu: 100m
+            memory: 30Mi
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 6382
-          initialDelaySeconds: 180
-          periodSeconds: 40
-          timeoutSeconds: 10
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
         readinessProbe:
           httpGet:
             path: /healthz
-            port: 6382
-          initialDelaySeconds: 30
-          periodSeconds: 40
-          timeoutSeconds: 10
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 30
+          failureThreshold: 15
         envFrom:
         - configMapRef:
           name: hercules-backend-service-configs

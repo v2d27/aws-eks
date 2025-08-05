@@ -2,8 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 
-commonLabels:
-  app: hercules-backend-service
+labels:
+- pairs:
+    app: hercules-backend-service
 
 resources:
   - service.yml
