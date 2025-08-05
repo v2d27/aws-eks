@@ -60,12 +60,14 @@ jobs:
         id: get
         run: |
           echo "tags=${{ env.docker_user }}/${{ inputs.registry }}:${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
+          echo "cache=${{ env.docker_user }}/${{ inputs.registry }}:cache" >> $GITHUB_OUTPUT
           echo "labels=org.opencontainers.image.revision=${{ github.sha }}" >> $GITHUB_OUTPUT
           echo "author=org.opencontainers.image.authors=${{ env.author }}" >> $GITHUB_OUTPUT
           echo "platforms=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
           registry="${{ inputs.registry }}"
           registry=$(echo "${registry##*-}")
           echo "context=./app/$registry" >> $GITHUB_OUTPUT
+          echo "dockerfile=./app/$registry/Dockerfile" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -73,11 +75,14 @@ jobs:
           push: true
           tags: ${{ steps.get.outputs.tags }}
           context: ${{ steps.get.outputs.context }}
-          file: Dockerfile
+          file: ${{ steps.get.outputs.dockerfile }}
           platforms: ${{ steps.get.outputs.platforms }}
+          cache-to: type=registry,ref=${{ steps.get.outputs.cache }},mode=max,oci-mediatypes=true
+          cache-from: type=registry,ref=${{ steps.get.outputs.cache }}
           labels: |
             ${{ steps.get.outputs.labels }}
             ${{ steps.get.outputs.author }}
+          
 
   # deploy:
   #   name: Deploy to ${{ inputs.environment }}
