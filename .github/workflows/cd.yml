@@ -88,28 +88,65 @@ jobs:
             ${{ steps.get.outputs.author }}
           
 
-  # deploy:
-  #   name: Deploy to ${{ inputs.environment }}
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-  #   environment: ${{ inputs.environment }}
-  #   env:
-  #     service_name: ${{ steps.build-and-push.outputs.service_name }}
-  #     image: ${{ steps.build-and-push.outputs.image }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: ${{ inputs.environment }}
+    env:
+      service_name: ${{ steps.build-and-push.outputs.service_name }}
+      image: ${{ steps.build-and-push.outputs.image }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Install Kustomize
-  #       uses: imranismail/setup-kustomize@v2.1.0
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.GHA_BOT_APP_ID }}
+          private-key: ${{ secrets.GHA_BOT_PRIVATE_KEY }}
+          
+      - name: Get GitHub App User ID
+        id: get-user-id
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
 
-  #     - name: Update new deployment image
-  #       run: |
-  #         echo "Updating deployment image for $service_name in ${{ github.ref_name}}"
-  #         cd ${{ github.workspace }}/manifest/services/$service_name/overlays/${{ github.ref_name}}
-  #         kustomize edit set image deployment-image=$DOCKER_IMAGE
-  #         kustomize build .
-  #         echo "----- Validating kustomization.yml -----"
-  #         cat kustomization.yml
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2.1.0
 
-  #     - name: 
+      - name: Update new deployment image
+        run: |
+          echo "Updating deployment image for $service_name in ${{ github.ref_name}}"
+          cd ${{ github.workspace }}/manifest/services/$service_name/overlays/${{ github.ref_name}}
+          kustomize edit set image deployment-image=${{ env.image }}
+          kustomize build .
+          echo "----- Validating kustomization.yml -----"
+          cat kustomization.yml
+
+      - name: Commit changes
+        run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+
+          git add ./manifest/services/$service_name/overlays/${{ github.ref_name }}/kustomization.yml
+          git commit -m "bot: Deploying $service_name to ${{ github.ref_name }}"
+          
+          MAX_RETRIES=10
+          RETRY_COUNT=0
+
+          until git pull --rebase && git push; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "Retry attempt $RETRY_COUNT due to rebase/push conflict..."
+            
+            if [[ $RETRY_COUNT -ge $MAX_RETRIES ]]; then
+              echo "Failed to rebase and push after $MAX_RETRIES attempts."
+              exit 1
+            fi
+
+            # Delay before retrying
+            sleep 2
+          done
