@@ -86,7 +86,6 @@ jobs:
           labels: |
             ${{ steps.get.outputs.labels }}
             ${{ steps.get.outputs.author }}
-          
 
   deploy:
     name: Deploy to ${{ inputs.environment }}
@@ -94,8 +93,8 @@ jobs:
     needs: build-and-push
     environment: ${{ inputs.environment }}
     env:
-      service_name: ${{ steps.build-and-push.outputs.service_name }}
-      image: ${{ steps.build-and-push.outputs.image }}
+      image: ${{ needs.build-and-push.outputs.image }}
+      service_name: ${{ needs.build-and-push.outputs.service_name }}
     permissions:
       contents: write
     steps:
@@ -134,7 +133,7 @@ jobs:
 
           git add ./manifest/services/$service_name/overlays/${{ github.ref_name }}/kustomization.yml
           git commit -m "bot: Deploying $service_name to ${{ github.ref_name }}"
-          
+
           MAX_RETRIES=10
           RETRY_COUNT=0
 
