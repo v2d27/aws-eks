@@ -2,19 +2,19 @@ name: App Deployment
 
 on:
   workflow_dispatch:
-  inputs:
-    registry:
-      required: true
-      type: choice
-      options:
-      - real-time-chat-app-backend
-      - real-time-chat-app-frontend
-    environment:
-      required: true
-      type: choice
-      options:
-      - eks-main
-      - eks-develop
+    inputs:
+      registry:
+        required: true
+        type: choice
+        options:
+        - real-time-chat-app-backend
+        - real-time-chat-app-frontend
+      environment:
+        required: true
+        type: choice
+        options:
+        - eks-main
+        - eks-develop
 
   workflow_call:
     inputs:
@@ -65,15 +65,14 @@ jobs:
           echo "platforms=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
           registry="${{ inputs.registry }}"
           registry=$(echo "${registry##*-}")
-          echo "working_directory=./app/$registry" >> $GITHUB_OUTPUT
+          echo "context=./app/$registry" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6
-        working-directory: ${{ steps.get.outputs.working_directory }}
         with:
           push: true
           tags: ${{ steps.get.outputs.tags }}
-          context: .
+          context: ${{ steps.get.outputs.context }}
           file: Dockerfile
           platforms: ${{ steps.get.outputs.platforms }}
           labels: |
