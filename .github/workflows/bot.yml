@@ -18,7 +18,7 @@ jobs:
         with:
           # required
           app-id: 1732678
-          private-key: 33002326adddcd0c014e890f01072ec48edfad22
+          private-key: ${{ secrets.GHA_BOT_PRIVATE_KEY }}
       - name: Get GitHub App User ID
         id: get-user-id
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
