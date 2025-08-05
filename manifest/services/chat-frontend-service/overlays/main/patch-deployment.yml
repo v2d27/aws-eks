@@ -9,11 +9,11 @@ spec:
       - name: hercules-frontend-service
         resources:
           requests:
-            cpu: 64m
-            memory: 128Mi
+            cpu: 50m
+            memory: 10Mi
           limits:
-            cpu: 128m
-            memory: 256Mi
+            cpu: 100m
+            memory: 30Mi
       nodeSelector:
         eks.amazonaws.com/capacityType: ON_DEMAND
         eks-node-group-type: standard
