@@ -6,7 +6,6 @@ resources:
 - ../../base
 - configmap.yml
 - ingress.yml
-- tcp-service.yml
 
 images:
 - name: deployment-image

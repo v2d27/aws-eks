@@ -1,0 +1,94 @@
+name: App Deployment
+
+on:
+  workflow_dispatch:
+  inputs:
+    registry:
+      required: true
+      type: choice
+      options:
+      - real-time-chat-app-backend
+      - real-time-chat-app-frontend
+    environment:
+      required: true
+      type: choice
+      options:
+      - eks-main
+      - eks-develop
+
+  workflow_call:
+    inputs:
+      registry:
+        description: 'Docker registry to use for deployment'
+        required: true
+        type: string
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: string
+
+concurrency:
+  group: cd-${{ github.repository_id }}-${{ inputs.environment }}-${{ inputs.registry }}
+  cancel-in-progress: true
+
+env:
+  docker_user: hercules9
+  author: Hercules
+
+jobs:
+  build-and-push:
+    name: Building image ${{ inputs.registry }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get Metadata
+        id: get
+        run: |
+          echo "tags=${{ env.docker_user }}/${{ inputs.registry }}:${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
+          echo "labels=org.opencontainers.image.revision=${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "author=org.opencontainers.image.authors=${{ env.author }}" >> $GITHUB_OUTPUT
+          echo "platforms=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
+          registry="${{ inputs.registry }}"
+          registry=$(echo "${registry##*-}")
+          echo "working_directory=./app/$registry" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        working-directory: ${{ steps.get.outputs.working_directory }}
+        with:
+          push: true
+          tags: ${{ steps.get.outputs.tags }}
+          context: .
+          file: Dockerfile
+          platforms: ${{ steps.get.outputs.platforms }}
+          labels: |
+            ${{ steps.get.outputs.labels }}
+            ${{ steps.get.outputs.author }}
+
+  # deploy:
+  #   name: Deploy to ${{ inputs.environment }}
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-push
+  #   environment: ${{ inputs.environment }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+      
+
+        

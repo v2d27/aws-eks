@@ -1,0 +1,18 @@
+name: App Frontend Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'app/frontend/**'
+
+jobs:
+  cd:
+    name: Run
+    uses: ./.github/workflows/cd.yml
+    with:
+      registry: real-time-chat-app-frontend
+      environment: "eks-${{ github.ref_name }}"
+    secrets: inherit
