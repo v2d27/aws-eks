@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: chat-building-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: hercules-frontend-service
   ports:
