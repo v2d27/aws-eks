@@ -63,8 +63,8 @@ jobs:
       - name: Get Metadata
         id: get
         run: |
-          echo "tags=${{ env.docker_user }}/${{ inputs.registry }}:${{ github.ref_name }}-${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
-          echo "cache=${{ env.docker_user }}/${{ inputs.registry }}:cache" >> $GITHUB_OUTPUT
+          echo "tags=${{ vars.DOCKERHUB_USER }}/${{ inputs.registry }}:${{ github.ref_name }}-${{ github.sha || github.run_id }}" >> $GITHUB_OUTPUT
+          echo "cache=${{ vars.DOCKERHUB_USER }}/${{ inputs.registry }}:cache" >> $GITHUB_OUTPUT
           echo "labels=org.opencontainers.image.revision=${{ github.sha }}" >> $GITHUB_OUTPUT
           echo "author=org.opencontainers.image.authors=${{ env.author }}" >> $GITHUB_OUTPUT
           echo "platforms=linux/amd64,linux/arm64" >> $GITHUB_OUTPUT
