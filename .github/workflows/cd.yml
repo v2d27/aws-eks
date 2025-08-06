@@ -32,8 +32,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  docker_user: hercules9
   author: Hercules
+  app: real-time-chat-app
+  project: aws-eks
 
 jobs:
   build-and-push:
@@ -50,7 +51,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USER }}
+          username: ${{ vars.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up QEMU
@@ -134,7 +135,7 @@ jobs:
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
           git add ./manifest/services/$service_name/overlays/${{ github.ref_name }}/kustomization.yml
-          git commit -m "bot: Deploying $service_name to ${{ github.ref_name }}"
+          git commit -m "bot: deploying $service_name to ${{ github.ref_name }}"
 
           MAX_RETRIES=10
           RETRY_COUNT=0
