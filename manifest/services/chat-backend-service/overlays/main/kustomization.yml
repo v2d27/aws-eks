@@ -9,8 +9,6 @@ resources:
 
 images:
 - name: deployment-image
-  newName: hercules9/my_image
-  newTag: test_tag
 
 replicas:
 - count: 1
