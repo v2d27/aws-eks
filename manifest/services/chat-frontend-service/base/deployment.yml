@@ -46,11 +46,11 @@ spec:
           httpGet:
             path: /healthz
             port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: 5
+          periodSeconds: 5
           timeoutSeconds: 2
           successThreshold: 1
-          failureThreshold: 10
+          failureThreshold: 15
         envFrom:
         - configMapRef:
             name: hercules-backend-service-configs
