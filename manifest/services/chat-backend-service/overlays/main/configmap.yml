@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: hercules-backend-service-configs
 data:
-  HOST: 0.0.0.0
-  PORT: 8080
-  ALLOWED_ORIGIN: '*'
+  HOST: "0.0.0.0"
+  PORT: "8080"
+  ALLOWED_ORIGIN: "*"
 
