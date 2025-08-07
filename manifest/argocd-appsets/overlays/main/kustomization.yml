@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
+  - ../../base
   - infrastructure-appset.yml
   - kubernetes-appset.yml
   - service-appset.yml

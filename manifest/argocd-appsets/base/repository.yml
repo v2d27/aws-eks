@@ -1,0 +1,10 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Repository
+metadata:
+  name: aws-eks-repo
+spec:
+  repo: git@github.com:v2d27/aws-eks.git
+  type: git
+  sshPrivateKeySecret:
+    name: git-ssh-secret
+    key: sshPrivateKey

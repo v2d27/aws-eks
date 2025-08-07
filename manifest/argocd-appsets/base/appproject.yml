@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aws-eks
+spec:
+  description: Project for AWS EKS applications
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: '*'
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
