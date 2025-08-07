@@ -10,7 +10,7 @@ spec:
         repoURL: git@github.com:v2d27/aws-eks.git
         revision: HEAD
         directories:
-          - path: manifest/**/infrastructures/overlays/main
+          - path: manifest/infrastructures/overlays/main
   template:
     metadata:
       name: 'hercules-infras-main'

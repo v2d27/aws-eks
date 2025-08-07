@@ -10,7 +10,7 @@ spec:
         repoURL: git@github.com:v2d27/aws-eks.git
         revision: HEAD
         directories:
-          - path: manifest/**/kubernetes/overlays/main
+          - path: manifest/kubernetes/overlays/main
   template:
     metadata:
       name: 'hercules-k8s-main'
