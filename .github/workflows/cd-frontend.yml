@@ -15,4 +15,6 @@ jobs:
     with:
       registry: real-time-chat-app-frontend
       environment: "eks-${{ github.ref_name }}"
+    permissions:
+      contents: write
     secrets: inherit

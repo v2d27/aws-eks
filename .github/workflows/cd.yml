@@ -44,6 +44,8 @@ jobs:
     outputs:
       image: ${{ steps.get.outputs.tags }}
       service_name: ${{ steps.get.outputs.service_name }}
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -96,8 +98,8 @@ jobs:
     env:
       image: ${{ needs.build-and-push.outputs.image }}
       service_name: ${{ needs.build-and-push.outputs.service_name }}
-    # permissions:
-    #   contents: write
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
