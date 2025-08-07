@@ -3,15 +3,3 @@ kind: ConfigMap
 metadata:
   name: hercules-frontend-service-configs
 data:
-  # WebSocket Configuration
-  VITE_WS_HOST: "localhost"
-  VITE_WS_PORT: "8080"
-  VITE_WS_PROTOCOL: "ws"
-
-  # API Configuration
-  VITE_API_BASE_URL: "http://api.v2d27demo.online"
-
-  # Application Configuration
-  VITE_APP_NAME: "Chat Application"
-  VITE_APP_VERSION: "1.0.0"
-  VITE_DEBUG: "false"
