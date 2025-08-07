@@ -47,10 +47,10 @@ spec:
           successThreshold: 1
           failureThreshold: 15
         envFrom:
-        - configMapRef:
-          name: hercules-backend-service-configs
+        - configMapRef: 
+            name: hercules-backend-service-configs
         - secretRef:
-          name: hercules-backend-service-secrets
+            name: hercules-backend-service-secrets
         env:
         - name: POD_NAME
           valueFrom:
