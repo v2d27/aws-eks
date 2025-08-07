@@ -15,7 +15,7 @@ spec:
         paths:
           - backend:
               service:
-                name: chat-building-service
+                name: hercules-frontend-service
                 port:
                   number: 80
             path: /

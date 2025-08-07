@@ -5,6 +5,7 @@ namespace: chat-develop
 resources:
 - ../../base
 - configmap.yml
+- secret.yml
 - ingress.yml
 
 images:

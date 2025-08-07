@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: chat-building-service
+  name: hercules-frontend-service-main
 spec:
   type: ClusterIP
   selector:

@@ -13,7 +13,7 @@ spec:
           - path: manifest/services/**/overlays/main
   template:
     metadata:
-      name: '{{index .path.segments 1}}-main'
+      name: '{{index .path.segments 2}}-main'
     spec:
       project: aws-eks
       source:
