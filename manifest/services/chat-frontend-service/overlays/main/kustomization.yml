@@ -9,8 +9,8 @@ resources:
 
 images:
 - name: deployment-image
-  newName: hercules9/my_image
-  newTag: test_tag
+  newName: hercules9/real-time-chat-app-frontend
+  newTag: main-e33da419436014d9274bcf5d3d6b99c384abae27
 
 replicas:
 - count: 1

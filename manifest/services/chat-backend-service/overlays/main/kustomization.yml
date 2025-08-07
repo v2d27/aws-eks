@@ -9,6 +9,8 @@ resources:
 
 images:
 - name: deployment-image
+  newName: hercules9/real-time-chat-app-backend
+  newTag: main-923d4c14c642eeb6e2fcf3a6b506852d02e5999f
 
 replicas:
 - count: 1
