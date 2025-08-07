@@ -9,7 +9,7 @@ RUN yarn install --only=production
 COPY . .
 
 # WebSocket Configuration
-ARG VITE_WS_HOST=http://api.v2d27demo.online
+ARG VITE_WS_HOST=api.v2d27demo.online
 ARG VITE_WS_PORT=80
 ARG VITE_WS_PROTOCOL=ws
 
