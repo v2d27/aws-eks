@@ -14,4 +14,4 @@ data:
   # Application Configuration
   VITE_APP_NAME: Chat Application
   VITE_APP_VERSION: 1.0.0
-  VITE_DEBUG: false
+  VITE_DEBUG: "false"
