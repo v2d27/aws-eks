@@ -11,6 +11,10 @@ dependency "eks_cluster" {
   config_path = "../eks-cluster"
 }
 
+dependency "argocd_admin_pass" {
+  config_path = "../argocd-admin-pass"
+}
+
 generate "helm_provider" {
   path      = "helm_provider.tf"
   if_exists = "overwrite_terragrunt"
@@ -35,32 +39,21 @@ locals {
   domain = "${include.env.locals.domain}"
 
   # ArgoCD domain
-  argocd_domain = "${local.system}-argocd.${local.domain}"
+  argocd_domain = "argocd-${local.system}.${local.domain}"
   
   # Generate bcrypt hashes using local execution
-  admin_password_plain = "admin-password-plain"
-  devuser_password_plain = "devuser-password-plain"
-  webhook_secret_plain = "webhook-secret-plain"
-  
-  # Generate bcrypt hashes using htpasswd command
-  admin_password_bcrypt = run_cmd("--terragrunt-quiet", "bash", "-c", "htpasswd -bnBC 10 '' '${local.admin_password_plain}' | tr -d ':\\n' | cut -d: -f2")
-  devuser_password_bcrypt = run_cmd("--terragrunt-quiet", "bash", "-c", "htpasswd -bnBC 10 '' '${local.devuser_password_plain}' | tr -d ':\\n' | cut -d: -f2")
-  
-  # Generate current timestamp for passwordMtime
-  current_timestamp = run_cmd("--terragrunt-quiet", "date", "-u", "+%Y-%m-%dT%H:%M:%SZ")
+  argocd_admin_password = dependency.argocd_admin_pass.outputs.random_password_bcrypt
 }
 
 inputs = {
   release_name  = "argocd-${local.environment}"
   repository    = "https://argoproj.github.io/argo-helm"
   chart_name    = "argo-cd"
-  chart_version = "8.1.2"
+  chart_version = "8.3.0"
   namespace     = "argocd"
   values_file   = "values.yaml"
   values_variables = {
     argocd_domain = "${local.argocd_domain}"
-    admin_password_bcrypt = "${local.admin_password_bcrypt}"
-    devuser_password_bcrypt = "${local.devuser_password_bcrypt}"
-    webhook_secret = "${local.webhook_secret_plain}"
+    argocd_admin_password = "${local.argocd_admin_password}"
   }
 }
