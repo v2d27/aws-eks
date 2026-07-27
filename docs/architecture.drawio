@@ -1,0 +1,313 @@
+<mxfile host="app.diagrams.net" agent="aws-eks">
+  <diagram id="aws-eks-architecture" name="Architecture &amp; Flows">
+    <mxGraphModel dx="2088" dy="1171" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1650" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1F2933;" value="AWS EKS — Real-Time Chat Platform" vertex="1">
+          <mxGeometry height="34" width="850" x="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=13;fontColor=#6B7280;" value="Infrastructure provisioning · Deployment (GitOps) · User request path" vertex="1">
+          <mxGeometry height="34" width="800" x="900" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" parent="1" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F2F7FD;strokeColor=#6C8EBF;dashed=1;verticalAlign=top;align=left;spacingLeft=16;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2F5597;" value="1 · INFRASTRUCTURE FLOW — Terragrunt provisions AWS bottom-up, one state file per unit" vertex="1">
+          <mxGeometry height="470" width="1660" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" parent="1" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F3FAF2;strokeColor=#82B366;dashed=1;verticalAlign=top;align=left;spacingLeft=16;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2D6B24;" value="2 · DEPLOYMENT FLOW — GitHub Actions builds and commits the tag, Argo CD syncs (CI never touches the cluster)" vertex="1">
+          <mxGeometry height="430" width="1660" x="40" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" parent="1" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFF8F0;strokeColor=#D79B00;dashed=1;verticalAlign=top;align=left;spacingLeft=16;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#A06800;" value="3 · USER FLOW — request path from browser to pod" vertex="1">
+          <mxGeometry height="590" width="1660" x="40" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="s1addons" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673A6;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontStyle=2;fontColor=#6C3483;" value="Platform add-ons — Helm charts applied through the ws-eks-helm module" vertex="1">
+          <mxGeometry height="150" width="680" x="500" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#3B1F1F;" value="&lt;b&gt;Platform Engineer&lt;/b&gt;&lt;br&gt;AWS CLI · tfswitch · tgswitch" vertex="1">
+          <mxGeometry height="70" width="150" x="80" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;terragrunt run-all apply&lt;/b&gt;&lt;br&gt;infras/account/ap-southeast-1/develop" vertex="1">
+          <mxGeometry height="70" width="190" x="270" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fontColor=#4D3B00;" value="&lt;b&gt;State&lt;/b&gt;&lt;br&gt;S3 bucket + DynamoDB lock. One state file per unit, so a change plans against its own resources only." vertex="1">
+          <mxGeometry height="80" width="190" x="270" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;iam/current-user&lt;/b&gt;&lt;br&gt;caller ARN → cluster admin access entry" vertex="1">
+          <mxGeometry height="70" width="170" x="500" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;VPC&lt;/b&gt;&lt;br&gt;10.0.0.0/16&lt;br&gt;4 × /20 public subnets&lt;br&gt;AZ ap-southeast-1a / 1b" vertex="1">
+          <mxGeometry height="80" width="190" x="710" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;fontColor=#3B2A0F;" value="&lt;b&gt;EKS Cluster v1.33&lt;/b&gt;&lt;br&gt;public endpoint&lt;br&gt;managed node groups: on-demand + spot&lt;br&gt;t3.medium · scale 0–2&lt;br&gt;&lt;i&gt;add-ons: vpc-cni (prefix delegation), coredns, kube-proxy, pod-identity-agent&lt;/i&gt;" vertex="1">
+          <mxGeometry height="110" width="250" x="930" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#12315B;" value="&lt;b&gt;EBS CSI Driver&lt;/b&gt; 2.45.1&lt;br&gt;gp3 volumes for PVCs" vertex="1">
+          <mxGeometry height="80" width="180" x="520" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;NLB Security Group&lt;/b&gt;&lt;br&gt;80 / 443 open&lt;br&gt;5000 → allow-listed IPs" vertex="1">
+          <mxGeometry height="80" width="180" x="720" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#12315B;" value="&lt;b&gt;ingress-nginx&lt;/b&gt; 4.12.1&lt;br&gt;HPA 2–4 replicas&lt;br&gt;provisions the internet-facing NLB" vertex="1">
+          <mxGeometry height="80" width="240" x="920" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;argocd-admin-pass&lt;/b&gt;&lt;br&gt;random_password + bcrypt&lt;br&gt;stable across applies (keepers)" vertex="1">
+          <mxGeometry height="80" width="250" x="1220" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#12315B;" value="&lt;b&gt;Argo CD 8.3.0&lt;/b&gt; (Helm)&lt;br&gt;ns: argocd · nginx ingress&lt;br&gt;RBAC + terraform-admin account" vertex="1">
+          <mxGeometry height="80" width="250" x="1220" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;eks-argocd-manage&lt;/b&gt;&lt;br&gt;AppProject · repo credentials&lt;br&gt;&lt;b&gt;creates the ROOT APPLICATION&lt;/b&gt;" vertex="1">
+          <mxGeometry height="90" width="250" x="1220" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="n2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#B8A24A;fontColor=#7A6600;endArrow=none;dashed=1;strokeWidth=1.5;" target="n3" value="state">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="n2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="n4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="n5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;verticalAlign=bottom;" target="n6" value="vpc_id, subnet_ids">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="n6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="s1addons" value="cluster endpoint + CA&lt;br&gt;(helm provider)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="n8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n9" value="security group id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="n6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n11" value="bcrypt hash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="n11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="n12" value="plaintext&lt;br&gt;(provider login)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#3B1F1F;" value="&lt;b&gt;Developer&lt;/b&gt;&lt;br&gt;git push →&lt;br&gt;app/backend/** or app/frontend/**" vertex="1">
+          <mxGeometry height="80" width="150" x="80" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;GitHub Actions&lt;/b&gt;&lt;br&gt;cd-backend.yml / cd-frontend.yml&lt;br&gt;→ reusable cd.yml" vertex="1">
+          <mxGeometry height="80" width="200" x="265" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;docker buildx&lt;/b&gt;&lt;br&gt;linux/amd64 + arm64&lt;br&gt;registry layer cache" vertex="1">
+          <mxGeometry height="80" width="180" x="500" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;Docker Hub&lt;/b&gt;&lt;br&gt;real-time-chat-app-backend&lt;br&gt;real-time-chat-app-frontend&lt;br&gt;tag: branch-sha" vertex="1">
+          <mxGeometry height="80" width="200" x="715" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontColor=#1B3D18;" value="&lt;b&gt;kustomize edit set image&lt;/b&gt;&lt;br&gt;manifest/services/[svc]/overlays/[env]&lt;br&gt;rewrites the deployment-image placeholder" vertex="1">
+          <mxGeometry height="80" width="230" x="950" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;Bot commit + push&lt;/b&gt;&lt;br&gt;GitHub App token&lt;br&gt;rebase-and-retry loop" vertex="1">
+          <mxGeometry height="80" width="200" x="1215" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="d7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;fontColor=#1B3D18;" value="&lt;b&gt;Git repository&lt;/b&gt;&lt;br&gt;single source of truth&lt;br&gt;for cluster state" vertex="1">
+          <mxGeometry height="80" width="200" x="1215" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="d8" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#12315B;" value="&lt;b&gt;Argo CD&lt;/b&gt; (in cluster)&lt;br&gt;3 ApplicationSets · auto-sync&lt;br&gt;prune + selfHeal" vertex="1">
+          <mxGeometry height="80" width="230" x="950" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="d9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;EKS cluster&lt;/b&gt;&lt;br&gt;rolling update of the Deployment" vertex="1">
+          <mxGeometry height="80" width="200" x="715" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="d10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fontColor=#4D3B00;" value="&lt;b&gt;Why the tag goes through Git&lt;/b&gt;&lt;br&gt;CI holds no kubeconfig and no AWS deploy role. Its only privilege is write access to this repository — the cluster pulls, CI never pushes. Every deploy is therefore a reviewable commit, and rollback is git revert." vertex="1">
+          <mxGeometry height="110" width="380" x="80" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" edge="1" parent="1" source="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" edge="1" parent="1" source="d2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" edge="1" parent="1" source="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d4" value="push">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" edge="1" parent="1" source="d4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" edge="1" parent="1" source="d5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" edge="1" parent="1" source="d6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f7" edge="1" parent="1" source="d7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d8" value="detects new commit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8" edge="1" parent="1" source="d8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="d9" value="sync">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f9" edge="1" parent="1" source="d4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#B8A24A;fontColor=#7A6600;endArrow=blockThin;endFill=1;dashed=1;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="d9" value="kubelet pulls image">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ns1" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673A6;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontStyle=2;fontColor=#6C3483;" value="namespace: chat-main  (chat-develop mirrors this)" vertex="1">
+          <mxGeometry height="210" width="760" x="910" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="ns2" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673A6;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontStyle=2;fontColor=#6C3483;" value="namespace: argocd" vertex="1">
+          <mxGeometry height="90" width="760" x="910" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="u1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#3B1F1F;" value="&lt;b&gt;End user&lt;/b&gt;&lt;br&gt;browser" vertex="1">
+          <mxGeometry height="80" width="140" x="80" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="u2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;DNS&lt;/b&gt;&lt;br&gt;*.v2d27demo.online" vertex="1">
+          <mxGeometry height="80" width="160" x="255" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="u3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontColor=#3B2A0F;" value="&lt;b&gt;AWS NLB&lt;/b&gt;&lt;br&gt;internet-facing · cross-zone&lt;br&gt;target-type: ip&lt;br&gt;SG: 80 / 443" vertex="1">
+          <mxGeometry height="90" width="200" x="450" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="u4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#12315B;" value="&lt;b&gt;ingress-nginx controller&lt;/b&gt;&lt;br&gt;2–4 replicas (HPA)&lt;br&gt;host-based routing" vertex="1">
+          <mxGeometry height="90" width="200" x="685" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="u5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Ingress  chat.v2d27demo.online" vertex="1">
+          <mxGeometry height="55" width="200" x="930" y="1212" as="geometry" />
+        </mxCell>
+        <mxCell id="u6" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Ingress  api.v2d27demo.online" vertex="1">
+          <mxGeometry height="55" width="200" x="930" y="1297" as="geometry" />
+        </mxCell>
+        <mxCell id="u7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Ingress  argocd-wsaws.v2d27demo.online" vertex="1">
+          <mxGeometry height="55" width="200" x="930" y="1405" as="geometry" />
+        </mxCell>
+        <mxCell id="u8" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Service (ClusterIP)&lt;br&gt;frontend  80 → 3000" vertex="1">
+          <mxGeometry height="55" width="190" x="1170" y="1212" as="geometry" />
+        </mxCell>
+        <mxCell id="u9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Service (ClusterIP)&lt;br&gt;backend  80 → 8080" vertex="1">
+          <mxGeometry height="55" width="190" x="1170" y="1297" as="geometry" />
+        </mxCell>
+        <mxCell id="u10" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="Service&lt;br&gt;argocd-server" vertex="1">
+          <mxGeometry height="55" width="190" x="1170" y="1405" as="geometry" />
+        </mxCell>
+        <mxCell id="u11" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="&lt;b&gt;Frontend pod&lt;/b&gt;&lt;br&gt;nginx + React SPA :3000&lt;br&gt;probes: /healthz" vertex="1">
+          <mxGeometry height="70" width="220" x="1400" y="1205" as="geometry" />
+        </mxCell>
+        <mxCell id="u12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="&lt;b&gt;Backend pod&lt;/b&gt;&lt;br&gt;Go WebSocket hub :8080&lt;br&gt;/ws · /healthz" vertex="1">
+          <mxGeometry height="70" width="220" x="1400" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="u13" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontColor=#12315B;" value="&lt;b&gt;argocd-server pod&lt;/b&gt;" vertex="1">
+          <mxGeometry height="55" width="220" x="1400" y="1405" as="geometry" />
+        </mxCell>
+        <mxCell id="u14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fontColor=#4D3B00;" value="&lt;b&gt;Real-time path&lt;/b&gt;&lt;br&gt;The browser opens ws://api.v2d27demo.online/ws. The Go hub registers the client, broadcasts every message to all open connections, and pushes a refreshed presence list on each join and disconnect." vertex="1">
+          <mxGeometry height="110" width="360" x="80" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="u15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fontColor=#4D3B00;" value="&lt;b&gt;Autoscaling vs. GitOps&lt;/b&gt;&lt;br&gt;Both Deployments run an HPA at 80% CPU. The service ApplicationSet declares ignoreDifferences on /spec/replicas, so Argo CD selfHeal does not revert what the HPA just scaled." vertex="1">
+          <mxGeometry height="110" width="360" x="80" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="lg0" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B3B3B3;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=11;fontStyle=1;fontColor=#374151;" value="Legend" vertex="1">
+          <mxGeometry height="190" width="330" x="480" y="1240" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" parent="1" style="rounded=1;arcSize=20;html=1;fillColor=#F8CECC;strokeColor=#B85450;" value="" vertex="1">
+          <mxGeometry height="16" width="26" x="500" y="1275" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;" value="Human actor" vertex="1">
+          <mxGeometry height="16" width="260" x="536" y="1275" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" parent="1" style="rounded=1;arcSize=20;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;" value="" vertex="1">
+          <mxGeometry height="16" width="26" x="500" y="1305" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;" value="AWS / managed infrastructure" vertex="1">
+          <mxGeometry height="16" width="260" x="536" y="1305" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" parent="1" style="rounded=1;arcSize=20;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" value="" vertex="1">
+          <mxGeometry height="16" width="26" x="500" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;" value="Kubernetes object / Helm release" vertex="1">
+          <mxGeometry height="16" width="260" x="536" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" parent="1" style="rounded=1;arcSize=20;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" value="" vertex="1">
+          <mxGeometry height="16" width="26" x="500" y="1365" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;" value="Git, CI/CD, Terraform / Terragrunt" vertex="1">
+          <mxGeometry height="16" width="260" x="536" y="1365" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" parent="1" style="rounded=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;" value="" vertex="1">
+          <mxGeometry height="16" width="26" x="500" y="1395" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;" value="Design note / constraint" vertex="1">
+          <mxGeometry height="16" width="260" x="536" y="1395" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" edge="1" parent="1" source="u1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" edge="1" parent="1" source="u2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" edge="1" parent="1" source="u3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g4" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="u5" value="Host header">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="896.4" y="1145" />
+              <mxPoint x="896.4" y="1239.48" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g5" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="u6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="896.4" y="1145" />
+              <mxPoint x="896.4" y="1324.52" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g6" edge="1" parent="1" source="u4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="u7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="897.2" y="1145" />
+              <mxPoint x="897.2" y="1432.52" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g7" edge="1" parent="1" source="u5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g8" edge="1" parent="1" source="u6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g9" edge="1" parent="1" source="u7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g10" edge="1" parent="1" source="u8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g11" edge="1" parent="1" source="u9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g12" edge="1" parent="1" source="u10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#5A5A5A;fontColor=#3A3A3A;endArrow=blockThin;endFill=1;strokeWidth=1.5;" target="u13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g13" edge="1" parent="1" source="u12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#B85450;fontColor=#8C2F2A;endArrow=blockThin;endFill=1;dashed=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;verticalAlign=bottom;" target="u1" value="WebSocket frames broadcast to every connected client">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1646.8" y="1325" />
+              <mxPoint x="1646.8" y="1560.04" />
+              <mxPoint x="62" y="1560.04" />
+              <mxPoint x="62" y="1145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="x1" edge="1" parent="1" source="n12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#9673A6;fontColor=#6C3483;endArrow=blockThin;endFill=1;dashed=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="d8" value="one-time bootstrap:&lt;br&gt;creates the root Application">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1595" y="405" />
+              <mxPoint x="1595" y="935" />
+              <mxPoint x="1065" y="935" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="x2" edge="1" parent="1" source="d9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#9673A6;fontColor=#6C3483;endArrow=blockThin;endFill=1;dashed=1;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ns1" value="new pods roll out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="815" y="995" />
+              <mxPoint x="1290" y="995" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
